@@ -12,16 +12,9 @@
 			"minFPPVersion": "2.0",
 			"maxFPPVersion": "7.99",
 			"branch": "master",
-			"sha": "",
-			"dependencies": {
-			    "plugins": [
-					],
-			    "packages": [
-					],
-				"scripts": [
-				]
-			},
-			{
+			"sha": ""
+		},
+		{
             "minFPPVersion": "8.0",
             "maxFPPVersion": "0",
             "branch": "master",
@@ -29,5 +22,4 @@
             "allowUpdates": 1
         }
 	]
-}
 }

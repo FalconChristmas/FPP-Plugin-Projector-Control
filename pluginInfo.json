@@ -10,7 +10,7 @@
 	"versions": [
 		{
 			"minFPPVersion": "2.0",
-			"maxFPPVersion": "9.99",
+			"maxFPPVersion": "7.99",
 			"branch": "master",
 			"sha": ""
 		},

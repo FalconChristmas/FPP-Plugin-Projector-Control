@@ -1,4 +1,5 @@
 #!/bin/bash
+source /opt/fpp/scripts/common
 pushd $(dirname $(which $0))
 target_PWD=$(readlink -f .)
 /opt/fpp/scripts/update_plugin ${target_PWD##*/}

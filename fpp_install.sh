@@ -1,4 +1,5 @@
 #!/bin/bash
+source /opt/fpp/scripts/common
 pushd $(dirname $(which $0))
 . /opt/fpp/scripts/common
 /usr/bin/sudo /bin/chmod a+w /dev/tty*

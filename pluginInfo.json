@@ -29,5 +29,35 @@
             "sha": "",
             "allowUpdates": 1
         }
-	]
+	],
+	"privacy": {
+		"summary": "Switches a projector on or off and picks its input, over your network or a serial cable. Installing downloads extra programs from the internet and loosens port permissions on the player.",
+		"sends": [
+			{
+				"to": "http://the projector address you enter",
+				"what": "on, off and input-change commands; the projector password itself is never sent",
+				"why": "To control your projector over your own network",
+				"alwaysOn": false
+			}
+		],
+		"collects": [],
+		"sensors": [],
+		"remoteAccess": "none",
+		"systemChanges": [
+			{
+				"kind": "download",
+				"what": "Downloads, builds and installs two extra programs from the internet while installing, with full control of the player"
+			},
+			{
+				"kind": "privilege",
+				"what": "Makes every serial and console port on the player writable by any program; undone by a restart, not by uninstalling"
+			},
+			{
+				"kind": "core-settings",
+				"what": "Puts its command scripts in the player's scripts folder, replacing any similarly named script; kept after uninstall"
+			}
+		],
+		"closedCode": false,
+		"other": "The projector password is saved and written to the plugin's log in plain words, and stays on the player after uninstall. The password box is hidden and passwords do not actually work. The extra programs also stay after uninstall."
+	}
 }

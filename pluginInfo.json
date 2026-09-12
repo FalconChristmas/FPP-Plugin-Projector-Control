@@ -31,7 +31,7 @@
         }
 	],
 	"privacy": {
-		"summary": "Switches a projector on or off and picks its input, over your network or a serial cable. Installing downloads a Perl module from CPAN and makes every serial port on the player writable by anyone.",
+		"summary": "Switches a projector on or off and picks its input, over your network or a serial cable. Installing makes every serial port on the player writable by anyone.",
 		"sends": [
 			{
 				"to": "the projector address you enter",
@@ -44,10 +44,6 @@
 		"sensors": [],
 		"remoteAccess": "none",
 		"systemChanges": [
-			{
-				"kind": "download",
-				"what": "downloads and builds the Net::PJLink and Switch Perl modules from CPAN at install, as root; kept after uninstall"
-			},
 			{
 				"kind": "privilege",
 				"what": "makes every serial and console port on the player writable by any program or user; undone by a restart, not by uninstall"

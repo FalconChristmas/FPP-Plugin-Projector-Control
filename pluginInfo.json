@@ -31,29 +31,29 @@
         }
 	],
 	"privacy": {
-		"summary": "Switches a projector on or off and picks its input, over your network or a serial cable. Installing makes every serial port on the player writable by anyone.",
-		"sends": [
-			{
-				"to": "the projector address you enter",
-				"what": "on, off and input-change commands",
-				"why": "to control the projector",
-				"alwaysOn": false
-			}
-		],
-		"collects": [],
-		"sensors": [],
-		"remoteAccess": "none",
-		"systemChanges": [
-			{
-				"kind": "privilege",
-				"what": "makes every serial and console port on the player writable by any program or user; undone by a restart, not by uninstall"
-			},
-			{
-				"kind": "core-settings",
-				"what": "writes its PROJECTOR-* command scripts into the player's scripts folder; kept after uninstall"
-			}
-		],
-		"closedCode": false,
-		"other": "The projector password is saved and written to the plugin's log in plain words and stays on the player after uninstall; the password box is hidden and passwords do not actually work. Every command and the projector's replies are logged."
+	 "summary": "Switches a projector on or off and picks its input, over your network or a serial cable. Installing makes every serial port on the player writable by anyone.",
+	 "sends": [
+	  {
+	   "to": "the projector address you enter",
+	   "what": "on, off and input-change commands",
+	   "why": "to control the projector",
+	   "alwaysOn": false
+	  }
+	 ],
+	 "collects": [],
+	 "sensors": [],
+	 "remoteAccess": "none",
+	 "systemChanges": [
+	  {
+	   "kind": "privilege",
+	   "what": "makes every serial and console port on the player writable by any program or user; undone by a restart, not by uninstall"
+	  },
+	  {
+	   "kind": "core-settings",
+	   "what": "deletes any PROJECTOR-* scripts in the player's scripts folder and writes its own there; kept after uninstall"
+	  }
+	 ],
+	 "closedCode": false,
+	 "other": "The projector password box is always hidden and choosing a projector clears the saved password, so one can only be set outside this page. A password that is set is never used for serial or TCP projectors and reaches a PJLink projector only when it starts with a digit; it is then written in plain words to the plugin log and shown on the command line. The plugin log records every command and the projector's replies, is included in FPP's log download, and stays on the player after uninstall, as does the plugin's settings file. Install fetches the Net::PJLink Perl library from CPAN."
 	}
 }

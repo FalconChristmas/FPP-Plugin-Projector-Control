@@ -48,7 +48,7 @@ if($ENABLED != "ON") {
 
 $options = getopt("c:");
 
-$SERIAL_DEVICE="/dev/".$DEVICE;
+$SERIAL_DEVICE = preg_match('/^tty[ASU][A-Z0-9]+$/', $DEVICE) ? "/dev/".$DEVICE : "";
 
 
 if($options["z"] != "") {
@@ -178,7 +178,7 @@ switch ($DEVICE_CONNECTION_TYPE) {
 	logEntry("Sending SERIAL COMMAND");
 	logEntry("SERIAL DEVICE: ".$SERIAL_DEVICE);
 
-	if (!preg_match('/^tty[ASU][A-Z0-9]+$/', $DEVICE)) {
+	if ($SERIAL_DEVICE === "") {
 		logEntry("Invalid serial device configured: ".$DEVICE.", exiting");
 		exit(1);
 	}

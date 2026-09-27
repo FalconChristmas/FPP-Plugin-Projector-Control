@@ -1,5 +1,7 @@
 #!/usr/bin/php
 <?php
+include_once '/opt/fpp/www/common.php';
+
 $eventDirectory = "/home/fpp/media/events";
 
 
@@ -10,6 +12,8 @@ foreach ($dir as $fileinfo) {
 	if (strpos($fileContents, "PROJECTOR-") !== false) {
 		unlink($fileName);
 	}
-}	
+}
+
+WriteSettingToFile('restartFlag', 1);
 
 ?>

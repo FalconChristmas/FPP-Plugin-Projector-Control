@@ -8,6 +8,7 @@
 	"bugURL": "https://github.com/FalconChristmas/FPP-Plugin-Projector-Control/issues",
 	"iconURL": "https://raw.githubusercontent.com/FalconChristmas/FPP-Plugin-Projector-Control/master/icon.png",
 	"allowUpdates": 1,
+	"releaseNotesStyle": "gitHistory",
 	"versions": [
 		{
 			"minFPPVersion": "2.0",

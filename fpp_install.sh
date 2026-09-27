@@ -1,7 +1,8 @@
 #!/bin/bash
+set -e
 pushd $(dirname $(which $0))
 . /opt/fpp/scripts/common
-/usr/bin/sudo /bin/chmod a+w /dev/tty*
+/bin/chmod g+w /dev/tty*
 echo ; echo "The plugin is checking for the required library." ; echo
 echo ; echo "This can take a couple minutes." ; echo
 

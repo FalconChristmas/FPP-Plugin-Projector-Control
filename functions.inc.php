@@ -26,7 +26,7 @@ $PROJ_PASSWORD = urldecode($pluginSettings['PROJ_PASSWORD']);
 $PROJ_PROTOCOL = urldecode($pluginSettings['PROJ_PROTOCOL']);
 $PROJECTOR_READ = $PROJECTOR;
 
-if (isset($_GET['action']) && $_GET['action'] == 'create_scripts') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] == 'create_scripts') {
    create_scripts();
 }
 function sendTCP($IP, $PORT, $cmd) {

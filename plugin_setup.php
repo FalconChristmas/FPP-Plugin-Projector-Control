@@ -67,7 +67,7 @@ $DEBUG = false;
 updateVisibility(); //show/hide boxes according to settings
 
 function projectorChanged(){	
-	GetSync("plugin.php?plugin=<?echo $pluginName ?>&page=functions.inc.php&action=create_scripts&nopage=1");
+	Post("plugin.php?plugin=<?echo $pluginName ?>&page=functions.inc.php&action=create_scripts&nopage=1", false, {});
 	location.reload();
 	updateVisibility();	
 }

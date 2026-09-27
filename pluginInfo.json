@@ -47,7 +47,7 @@
 	 "systemChanges": [
 	  {
 	   "kind": "privilege",
-	   "what": "makes every serial and console port on the player group-writable (the fpp account's dialout/tty group); undone by a restart, not by uninstall"
+	   "what": "makes every serial and console port on the player group-writable; undone by a restart, not by uninstall"
 	  },
 	  {
 	   "kind": "core-settings",
@@ -55,6 +55,6 @@
 	  }
 	 ],
 	 "closedCode": false,
-	 "other": "The projector password box is always hidden and choosing a projector clears the saved password, so one can only be set outside this page. A password that is set is never used for serial or TCP projectors and reaches a PJLink projector only when it starts with a digit; it is then written in plain words to the plugin log and shown on the command line. The plugin log records every command and the projector's replies, is included in FPP's log download, and stays on the player after uninstall, as does the plugin's settings file. Install fetches the Net::PJLink Perl library from CPAN; its source is public at https://metacpan.org/pod/Net::PJLink."
+	 "other": "The projector password box is always hidden and choosing a projector clears the saved password, so one can only be set outside this page. A password that is set is never used for serial or TCP projectors and reaches a PJLink projector only when it starts with a digit; it is then written in plain words to the plugin log and shown on the command line. The plugin log records every command and the projector's replies, is included in FPP's log download, and stays on the player after uninstall, as does the plugin's settings file. Install fetches the Net::PJLink Perl library from CPAN; its source is public at https://metacpan.org/pod/Net::PJLink. The group made writable is the fpp account's own dialout/tty group, not every user on the player."
 	}
 }

@@ -251,13 +251,28 @@ function getCharBits(){
 
 function logEntry($data) {
 	global $logFile,$myPid,$callBackPid;
-	
+
 	if($callBackPid != "") {
 		$data = $_SERVER['PHP_SELF']." : [".$callBackPid.":".$myPid."] ".$data;
-	} else { 	
+	} else {
 		$data = $_SERVER['PHP_SELF']." : [".$myPid."] ".$data;
 	}
-	$logWrite= fopen($logFile, "a") or die("Unable to open file!");
+
+	// fppd (root) and the web UI (the fpp user) both write this log, and
+	// whichever one creates it first otherwise leaves the other unable to
+	// open it -- root can always write regardless of ownership, so scope
+	// this to letting the fpp group in rather than the whole system.
+	if (!file_exists($logFile)) {
+		@touch($logFile);
+		@chgrp($logFile, 'fpp');
+		@chmod($logFile, 0660);
+	}
+
+	$logWrite = @fopen($logFile, "a");
+	if ($logWrite === false) {
+		error_log("FPP-Plugin-Projector-Control: unable to open log file $logFile");
+		return;
+	}
 	fwrite($logWrite, date('Y-m-d h:i:s A',time()).": ".$data."\n");
 	fclose($logWrite);
 }

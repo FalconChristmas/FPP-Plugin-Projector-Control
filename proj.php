@@ -4,7 +4,6 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-error_reporting(0);   //commented out was in file pat 2/4/2024
 
 //added Dec 3 2015
 ob_implicit_flush();
@@ -17,7 +16,7 @@ include_once 'commonFunctions.inc.php';
 include_once '/opt/fpp/www/config.php';
 include_once '/opt/fpp/www/common.php';
 
-$logFile = $settings['logDirectory'] . "/".$pluginName.".log";
+$logFile = $settings['logDirectory'] . "/plugin-".$pluginName.".log";
  
 
 //$cfgServer="192.168.192.15";
@@ -178,6 +177,12 @@ switch ($DEVICE_CONNECTION_TYPE) {
 	case "SERIAL":
 	logEntry("Sending SERIAL COMMAND");
 	logEntry("SERIAL DEVICE: ".$SERIAL_DEVICE);
+
+	if (!preg_match('/^tty[ASU][A-Z0-9]+$/', $DEVICE)) {
+		logEntry("Invalid serial device configured: ".$DEVICE.", exiting");
+		exit(1);
+	}
+
         $serial = new phpSerial;
 
         $serial->deviceSet($SERIAL_DEVICE);

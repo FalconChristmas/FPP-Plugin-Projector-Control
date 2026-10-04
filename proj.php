@@ -92,10 +92,12 @@ for($projectorIndex=0;$projectorIndex<=count($PROJECTORS)-1;$projectorIndex++) {
 						$PROJ_PASSWORD = $PROJECTORS[$projectorIndex]['PASSWORD'];
 					}
 
-					$PJLINK_CMD =  $settings['pluginDirectory'] . "/" .$pluginName. "/pjlinkutil.pl ";
-					$PJLINK_CMD .= $IP." ";
+					// IP and password come from plugin settings; quote them so they can't inject
+					// shell syntax. $PROJECTOR_CMD is a fixed multi-word action from projectorCommands.inc.
+					$PJLINK_CMD =  escapeshellarg($settings['pluginDirectory'] . "/" .$pluginName. "/pjlinkutil.pl")." ";
+					$PJLINK_CMD .= escapeshellarg($IP)." ";
 					$PJLINK_CMD .= $PROJECTOR_CMD." ";
-					$PJLINK_CMD .= "-p ".$PROJ_PASSWORD;
+					$PJLINK_CMD .= "-p ".escapeshellarg($PROJ_PASSWORD);
 					
 					logEntry("PJLINK CMD: ".$PJLINK_CMD);
 					$PROJECTOR_CMD = $PJLINK_CMD;

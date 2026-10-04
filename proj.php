@@ -48,7 +48,10 @@ if($ENABLED != "ON") {
 
 $options = getopt("c:");
 
-$SERIAL_DEVICE = preg_match('/^tty[ASU][A-Z0-9]+$/', $DEVICE) ? "/dev/".$DEVICE : "";
+// Allow-list the configured device before it's ever used to build a /dev path.
+if (preg_match('/^tty[ASU][A-Z0-9]+$/', $DEVICE)) {
+	$SERIAL_DEVICE = "/dev/".$DEVICE;
+}
 
 
 if($options["z"] != "") {

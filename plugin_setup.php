@@ -39,7 +39,6 @@ ensure_scripts();
 	<li>Select your Projector</li>
 	<li>The Projector Plugin will load the default settings for the projector chosen</li>
 	<li>For network based projectors, you will have to enter the IP address</li>
-	<li>Depending on the Projector selected, you might have to enter a password or Port</li>
 	<li>The Projector Control plug in now supports using FPP Commands</li>
 </ul>
 

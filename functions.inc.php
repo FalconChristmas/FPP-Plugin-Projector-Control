@@ -13,20 +13,21 @@ if (!isset($pluginSettings) || empty($pluginSettings)) {
 }
 
 $pluginName = basename(dirname(__FILE__)); //delete? defined in commonFunctions 
-$DEVICE = $pluginSettings['DEVICE'];
-$BAUD_RATE = $pluginSettings['BAUD_RATE'];
-$CHAR_BITS = $pluginSettings['CHAR_BITS'];
-$STOP_BITS = $pluginSettings['STOP_BITS'];
-$PARITY = $pluginSettings['PARITY'];	
-$IP = $pluginSettings['IP'];
-$PORT = $pluginSettings['PORT'];
-$ENABLED = urldecode($pluginSettings['ENABLED']);
-$PROJECTOR = urldecode($pluginSettings['PROJECTOR']);
-$PROJ_PASSWORD = urldecode($pluginSettings['PROJ_PASSWORD']);
-$PROJ_PROTOCOL = urldecode($pluginSettings['PROJ_PROTOCOL']);
+// A setting the user has not saved yet is not an error (a fresh install has none)
+$DEVICE = $pluginSettings['DEVICE'] ?? '';
+$BAUD_RATE = $pluginSettings['BAUD_RATE'] ?? '';
+$CHAR_BITS = $pluginSettings['CHAR_BITS'] ?? '';
+$STOP_BITS = $pluginSettings['STOP_BITS'] ?? '';
+$PARITY = $pluginSettings['PARITY'] ?? '';
+$IP = $pluginSettings['IP'] ?? '';
+$PORT = $pluginSettings['PORT'] ?? '';
+$ENABLED = urldecode($pluginSettings['ENABLED'] ?? '');
+$PROJECTOR = urldecode($pluginSettings['PROJECTOR'] ?? '');
+$PROJ_PASSWORD = urldecode($pluginSettings['PROJ_PASSWORD'] ?? '');
+$PROJ_PROTOCOL = urldecode($pluginSettings['PROJ_PROTOCOL'] ?? '');
 $PROJECTOR_READ = $PROJECTOR;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] == 'create_scripts') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && isset($_GET['action']) && $_GET['action'] == 'create_scripts') {
    create_scripts();
 }
 function sendTCP($IP, $PORT, $cmd) {
@@ -126,7 +127,83 @@ function getProjectors(){
 	return $PROJECTOR_LIST;
 }
 
-function create_scripts() {
+// The entries of a projector's definition that become command scripts: everything
+// except its name and its serial settings.
+function projector_command_keys($projector) {
+	$notCommands = array("NAME", "BAUD_RATE", "CHAR_BITS", "PARITY", "STOP_BITS", "VALID_STATUS_0", "VALID_STATUS_1", "VALID_STATUS_2");
+	$keys = array();
+	foreach ($projector as $key => $value) {
+		if (!in_array($key, $notCommands, true)) {
+			$keys[] = $key;
+		}
+	}
+	return $keys;
+}
+
+// The projector saved in the plugin's settings, as its entry in $PROJECTORS, or
+// null when none is chosen: nothing saved, the "-- Select Projector --"
+// placeholder, or a name that is no longer in the list.
+function saved_projector() {
+	global $PROJECTORS, $PROJECTOR_READ;
+
+	foreach ($PROJECTORS as $projector) {
+		if ($projector["NAME"] === $PROJECTOR_READ) {
+			$protocol = isset($projector["PROTOCOL"]) ? $projector["PROTOCOL"] : "SERIAL";
+			return ($protocol === "NONE") ? null : $projector;
+		}
+	}
+	return null;
+}
+
+// True when a projector is chosen but its command scripts, or the entries that
+// tell FPP about them, are missing.
+function projector_scripts_missing() {
+	global $pluginDirectory, $pluginName, $scriptDirectory;
+
+	$projector = saved_projector();
+	if ($projector === null) {
+		return false;
+	}
+
+	$commandsDir = $pluginDirectory . "/" . $pluginName . "/commands/";
+	$described = array();
+	$json = json_decode((string) @file_get_contents($commandsDir . "descriptions.json"), true);
+	if (is_array($json)) {
+		foreach ($json as $description) {
+			if (isset($description["script"])) {
+				$described[$description["script"]] = true;
+			}
+		}
+	}
+
+	foreach (projector_command_keys($projector) as $key) {
+		$file = "PROJECTOR-" . $key . ".sh";
+		if (!is_file($scriptDirectory . "/" . $file) || !is_file($commandsDir . $file) || !isset($described[$file])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+// create_scripts() only runs when the Projector dropdown changes, and picking the
+// projector that is already showing does not count as a change.  A saved choice
+// outlives the scripts built from it (the uninstall removes them, an update or a
+// reinstall can leave them out, settings can be restored from a backup), and the
+// page then shows the right projector with nothing behind it and no way to build
+// the scripts short of choosing another projector and coming back.  So build them
+// whenever they are missing.  Returns true if it had to.
+function ensure_scripts() {
+	if (!projector_scripts_missing()) {
+		return false;
+	}
+	logEntry("the saved projector has no command scripts, creating them");
+	create_scripts(false);
+	// fppd registers a plugin's commands (descriptions.json) when it starts
+	WriteSettingToFile('restartFlag', 1);
+	return true;
+}
+
+function create_scripts($echoResult = true) {
 	logEntry("in create scripts");
 	
 	//delete the old files and create new ones based on the projector chosen.
@@ -195,8 +272,9 @@ foreach ($PROJECTORS as $key => $projector) {
 		WriteSettingToFile("PORT", $PORT, $pluginName);
 
 		$index = $key; // Save the index
+		$commandKeys = projector_command_keys($PROJECTORS[$index]);
 		foreach($PROJECTORS[$index] as $key => $value){
-			if($key != "NAME" && $key != "BAUD_RATE" && $key != "CHAR_BITS" && $key != "PARITY" && $key != "STOP_BITS" && $key != "VALID_STATUS_0" && $key != "VALID_STATUS_1" && $key != "VALID_STATUS_2"){
+			if(in_array($key, $commandKeys, true)){
 				$scriptCMD = $pluginDirectory."/".$pluginName."/"."proj.php -d".$DEVICE_CONNECTION_TYPE." -s".$DEVICE." -c".$key; 
 				$scriptFilename = $scriptDirectory."/PROJECTOR-".$key.".sh";
 				$description= array(
@@ -237,7 +315,9 @@ foreach ($PROJECTORS as $key => $projector) {
 	}
 }
 	$result = Array("status" => "OK");
-	echo json_encode($result);
+	if ($echoResult) {
+		echo json_encode($result);
+	}
 	return;
 }
 

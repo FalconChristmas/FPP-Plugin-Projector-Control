@@ -10,6 +10,11 @@ include_once 'version.inc';
 
 $DEBUG = false;
 
+// The dropdown only builds the command scripts when it changes, and the projector
+// it already shows cannot be picked again.  If one is saved but its scripts are
+// missing (after a reinstall or an update, say), build them now.
+ensure_scripts();
+
 ?>
 <html>
 <head>
